@@ -1,4 +1,3 @@
-
 #ifndef BINARY_SEARCH_TREE_H
 #define BINARY_SEARCH_TREE_H
 
@@ -223,7 +222,7 @@ protected:
         if(other==nullptr){
             return nullptr;
         }
-        Node* new_node = new Node(*other);
+        Node* new_node = get_new_node(*other->pElement);
         for(int i=0; i<2; ++i){
             new_node.children[i] = recursive_copy(other->children[i]);
         }
@@ -261,16 +260,6 @@ public:
 
     virtual ~Node() noexcept{
         delete pElement;
-    }
-
-    void update(const T& e){
-        delete pElement;
-        pElement = new T(e);
-    }
-
-    void update(T&& e){
-        delete pElement;
-        pElement = new T(std::move(e));
     }
 
     Node* children[2] = {nullptr, nullptr};

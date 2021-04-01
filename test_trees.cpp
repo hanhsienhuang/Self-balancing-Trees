@@ -1,6 +1,7 @@
 #include"trees/binary_search_tree.h"
 #include"trees/red_black_tree.h"
 #include"trees/avl_tree.h"
+#include"trees/b_tree.h"
 #include<iostream>
 #include<cstdio>
 #include<chrono>
@@ -24,7 +25,7 @@ void test_tree(){
     begin = std::chrono::steady_clock::now();
 
     Tree<int, Less> tree;
-    for(int i=-N; i<0; ++i){
+    for(int i=-N*3; i<0; ++i){
         tree.insert(i);
     }
     std::cout << "size(should be " << N << "):" << tree.size() << "\n";
@@ -32,11 +33,13 @@ void test_tree(){
     for(int i=0; i<N; ++i){
         tree.insert(i);
     }
+
     std::cout << "size(should be " << 2*N << "):" << tree.size() << "\n";
     std::cout << "depth:" << tree.depth() << "\n";
     for(int i=0; i<N; ++i){
         tree.insert(i);
     }
+
     std::cout << "size(should be " << 3*N << "):" << tree.size() << "\n";
     std::cout << "depth:" << tree.depth() << "\n";
     for(int i=-N; i<N; ++i){
@@ -49,7 +52,7 @@ void test_tree(){
     int count = 0;
     for(auto it: tree){
         if(it != i){
-            std::cout << it << "!=" << i << "\n";
+            //std::cout << it << "!=" << i << "\n";
         }
         ++count;
         ++i;
@@ -66,4 +69,25 @@ int main(){
     //TEST(BinarySearchTree)
     TEST(RedBlackTree)
     TEST(AVLTree)
+    TEST(TwoThreeTree)
+    TEST(TwoThreeFourTree)
+    /*
+    auto tree1 = new TwoThreeTree<int, Less>;
+    
+    for(int i=0; i<10000; ++i){
+        tree1->insert(i);
+    }
+    for(auto i: *tree1){
+        std::cout << i << "\n";
+    }
+    delete tree1;
+    auto tree2 = new TwoThreeFourTree<int, Less>;
+    for(int i=0; i<10000; ++i){
+        tree2->insert(i);
+    }
+    for(auto i: *tree2){
+        std::cout << i << "\n";
+    }
+    delete tree2;
+    */
 }

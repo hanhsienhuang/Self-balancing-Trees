@@ -26,6 +26,7 @@ public:
             throw std::out_of_range("Error when trying to erase end");
         }
         // TODO: check same tree;
+
         --size_;
         BaseNode* node = this->get_iterator_internal(it);
         if(node->children[1] == nullptr){
@@ -84,18 +85,18 @@ public:
                 }else{
                     Node* child = dynamic_cast<Node*>(sibling->children[ip]);
                     if(parent == root) root = child;
+                    this->connect(parent->parent, child, parent->ip);
                     this->connect(sibling, child->children[is], ip);
                     this->connect(parent, child->children[ip], is);
                     this->connect(child, sibling, is);
                     this->connect(child, parent, ip);
 
-                    if(child->balance_factor==sibling->balance_factor){
-                        sibling->balance_factor = 0;
-                    }
-                    if(child->balance_factor==parent->balance_factor){
-                        parent->balance_factor = 0;
-                    }
-                    break;
+                    sibling->balance_factor = 
+                        (child->balance_factor==sibling->balance_factor)?(-sibling->balance_factor):0;
+                    parent->balance_factor = 
+                        (child->balance_factor==parent->balance_factor)?(-parent->balance_factor):0;
+                    child->balance_factor = 0;
+                    node = child;
                 }
             }
             parent = dynamic_cast<Node*>(node->parent);
@@ -149,19 +150,19 @@ private:
                 break;
             }else{
                 Node* child = dynamic_cast<Node*>(node->children[iu]);
+                this->connect(parent->parent, child, parent->ip);
                 this->connect(node, child->children[ip], iu);
                 this->connect(parent, child->children[iu], ip);
                 this->connect(child, node, ip);
                 this->connect(child, parent, iu);
                 if(parent == root) root = child;
 
-                if(child->balance_factor==node->balance_factor){
-                    node->balance_factor = 0;
-                }
-                if(child->balance_factor==parent->balance_factor){
-                    parent->balance_factor = 0;
-                }
-                node = child;
+                node->balance_factor = 
+                    (child->balance_factor==node->balance_factor)?(-node->balance_factor):0;
+                parent->balance_factor = 
+                    (child->balance_factor==parent->balance_factor)?(-parent->balance_factor):0;
+                child->balance_factor = 0;
+                break;
             }
             parent = dynamic_cast<Node*>(node->parent);
             ip = node->ip;
