@@ -91,7 +91,9 @@ public:
             ++it;
             if(to_be_deleted->parent == nullptr){
                 root = to_be_deleted->children[0];
-                to_be_deleted->children[0]->parent = nullptr;
+                if(root != nullptr){
+                    root->parent = nullptr;
+                }
             }else{
                 to_be_deleted
                     ->parent
@@ -138,14 +140,17 @@ public:
     template<typename K>
     Iterator lower_bound(const K& key){
         Node* node = root;
-        while(node != nullptr){
-            if(less(*(node->pElement), key)){
-                node = node->children[1];
+        Node* child = node;
+        while(child != nullptr){
+            if(less(*(child->pElement), key)){
+                node = child;
+                child = node->children[1];
             } else{
-                node = node->children[0];
+                node = child;
+                child = node->children[0];
             }
         }
-        while(node != nullptr && node->ip == 1){
+        while(node!=nullptr && less(*(node->pElement), key)){
             node = node->parent;
         }
         return Iterator{node};
@@ -154,14 +159,17 @@ public:
     template<typename K>
     Iterator upper_bound(const K& key){
         Node* node = root;
-        while(node != nullptr){
-            if(less(key, *(node->pElement))){
-                node = node->children[1];
+        Node* child = node;
+        while(child != nullptr){
+            if(less(key, *(child->pElement))){
+                node = child;
+                child = node->children[0];
             } else{
-                node = node->children[0];
+                node = child;
+                child = node->children[1];
             }
         }
-        while(node != nullptr && node->ip == 1){
+        while(node!=nullptr && !less(key, *(node->pElement))){
             node = node->parent;
         }
         return Iterator{node};
@@ -224,7 +232,7 @@ protected:
         }
         Node* new_node = get_new_node(*other->pElement);
         for(int i=0; i<2; ++i){
-            new_node.children[i] = recursive_copy(other->children[i]);
+            new_node->children[i] = recursive_copy(other->children[i]);
         }
         return new_node;
     }

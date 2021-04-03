@@ -167,7 +167,7 @@ private:
             parent = dynamic_cast<Node*>(node->parent);
             ip = node->ip;
         }
-        return Iterator{node};
+        return Iterator{dynamic_cast<Node*>(node_)};
     }
 
 

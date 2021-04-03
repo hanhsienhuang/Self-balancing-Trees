@@ -108,14 +108,17 @@ public:
         ++next_it;
         pair = get_iterator_internal(next_it);
         Node* next_node = pair.first;
-        //int next_index = pair.second;
+        int next_index = pair.second;
         if(node->children[index+1] == nullptr){
             erase_node(node, index);
+            if(next_node == node){
+                --next_index;
+            }
         }else{
             node->pElements[index] = next_node->pElements[0];
             erase_node(next_node, 0);
             std::swap(node, next_node);
-            //next_index = index;
+            next_index = index;
         }
 
         constexpr int min_size = (N-1)/2;
@@ -139,6 +142,12 @@ public:
                 parent->pElements[ip-1] = left->pElements[left->size-1];
                 connect_node(node, left->children[left->size], 0);
                 --left->size;
+                if(next_node == parent && next_index == ip-1){
+                    next_node = node;
+                    next_index = 0;
+                }else if(next_node == node){
+                    ++next_index;
+                }
                 break;
             }
 
@@ -148,17 +157,36 @@ public:
                 parent->pElements[ip] = right->pElements[0];
                 connect_node(right, right->children[1], 0);
                 erase_node(right, 0);
+                if(next_node == parent && next_index == ip){
+                    next_node = node;
+                    next_index = node->size -1;
+                }
                 break;
             }
 
             if(ip>0){
+                if(next_node == node){
+                    next_node = parent->children[ip-1];
+                    next_index = parent->children[ip-1]->size + 1 + next_index;
+                }else if(next_node == parent && next_index == ip-1){
+                    next_node = parent->children[ip-1];
+                    next_index = parent->children[ip-1]->size;
+                }else if(next_node == parent && next_index > ip-1){
+                    --next_index;
+                }
                 merge_nodes(parent, ip-1);
             }else{
+                if(next_node == parent && next_index == ip){
+                    next_node = node;
+                    next_index = node->size;
+                }else if(next_node == parent && next_index > ip){
+                    --next_index;
+                }
                 merge_nodes(parent, ip);
             }
             node = parent;
         }
-        return end();
+        return Iterator{next_node, next_index};
     }
     
     template<typename K>
@@ -239,7 +267,7 @@ protected:
         int l=0, r=node->size;
         while(l!=r){
             int mid = (l+r)>>1;
-            if(less(key, *node->pElement[mid])){
+            if(less(key, *node->pElements[mid])){
                 r = mid;
             }else{
                 l = mid + 1;
@@ -375,13 +403,18 @@ protected:
 
             right = split_node(node, index, pElement, right);
             pElement = node->pElements[node->size];
+
+            if(inserted_node == node){
+                if(index==(N+1)/2-1){
+                    inserted_node = node->parent;
+                    inserted_index = node->ip;
+                }else if(index >= (N+1)/2){
+                    inserted_node = right;
+                    inserted_index = index - (N+1)/2;
+                }
+            }
             index = node->ip;
             node = node->parent;
-
-            if(pElement == pElement_){
-                inserted_node = node;
-                inserted_index = index;
-            }
         }
         return Iterator{inserted_node, inserted_index};
     }
@@ -406,7 +439,7 @@ protected:
         }
         Node* new_node = new Node(*other);
         for(int i=0; i <= other->size; ++i){
-            new_node.children[i] = recursive_copy(other->children[i]);
+            new_node->children[i] = recursive_copy(other->children[i]);
         }
         return new_node;
     }

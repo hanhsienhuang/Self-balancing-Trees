@@ -36,7 +36,9 @@ public:
             ++it;
             if(node == root){
                 root = node->children[0];
-                root->parent = nullptr;
+                if(root!=nullptr){
+                    root->parent = nullptr;
+                }
             }else if(node->color == Color::red){
                 node->parent->children[node->ip] = nullptr;
             }else if(node->children[0] != nullptr){

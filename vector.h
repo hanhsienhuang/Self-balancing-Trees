@@ -45,10 +45,10 @@ public:
     bool operator==(const Iterator&) const;
     bool operator!=(const Iterator&) const;
 private:
-    size_t index;
     Vector& vector;
+    size_t index;
 };
 
 
-#include"vector.cpp"
+#include"vector-inl.h"
 #endif
