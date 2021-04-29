@@ -8,10 +8,10 @@ template<typename T, typename Compare>
 class BinarySearchTree{
 protected:
     class Node;
-    class Iterator;
 
 
 public:
+    class Iterator;
 
     BinarySearchTree() 
     :root(nullptr), size_(0)

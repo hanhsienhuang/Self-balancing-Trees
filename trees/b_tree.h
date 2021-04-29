@@ -3,17 +3,16 @@
 
 #include<utility>
 #include<stdexcept>
-#include<iostream>
 
 template<typename T, typename Compare, int N>
 class BTree{
 protected:
     class Node;
-    class Iterator;
 
 public:
+    class Iterator;
 
-    BTree() 
+    BTree() noexcept
     :root(nullptr), size_(0)
     {
         static_assert(N>=3, "N should be >= 3");

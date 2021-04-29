@@ -3,7 +3,6 @@
 
 #include"binary_search_tree.h"
 #include<utility>
-#include<iostream>
 
 template<typename T, typename Compare>
 class AVLTree:
