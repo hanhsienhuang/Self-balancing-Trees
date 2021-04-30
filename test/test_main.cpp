@@ -7,7 +7,7 @@
 #include "test_2_3_4_tree.h"
 #include "test_b_tree_32.h"
 #include "test_map.h"
-//#include "test_multimap.h"
+#include "test_multimap.h"
 //#include "test_set.h"
 //#include "test_multiset.h"
 
