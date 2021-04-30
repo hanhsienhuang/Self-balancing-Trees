@@ -592,6 +592,16 @@ public:
         }
         return *node->pElements[index];
     }
+
+    T* operator->(){
+        if(node == nullptr){
+            throw std::out_of_range("Out of rang in Tree");
+        }
+        if(index < 0 || index >= node->size){
+            throw std::out_of_range("Bad iterator");
+        }
+        return node->pElements[index];
+    }
 private:
     Node* node;
     int index;

@@ -13,24 +13,38 @@ private:
     typedef std::pair<const Key, T> Element;
 public:
     T& operator[](const Key& key){
-        auto it = tree.find(key)
+        auto it = tree.find(key);
         if( it== tree.end()){
             it = tree.insert(std::move(Element{key, T{}}));
         }
         return it->second;
     }
     
-    T& at(const Key& k){
-        auto it = tree.find(key)
+    T& at(const Key& key){
+        auto it = tree.find(key);
         if( it== tree.end()){
             throw std::out_of_range("No key in map");
         }
         return it->second;
     }
     
-    std::pair<iterator, bool> insert( const value_type& value );
-    std::pair<iterator, bool> insert( value_type&& value );
+    std::pair<Iterator, bool> insert( const Element& value ){
+        auto it = tree.find(value->first);
+        if( it== tree.end()){
+            it = tree.insert(value);
+            return std::pair<Iterator, bool>{{this, it}, true};
+        }
+        return std::pair<Iterator, bool>{end(), false};
+    }
 
+    std::pair<Iterator, bool> insert( Element&& value ){
+        auto it = tree.find(value.first);
+        if( it== tree.end()){
+            it = tree.insert(std::move(value));
+            return std::pair<Iterator, bool>{{this, it}, true};
+        }
+        return std::pair<Iterator, bool>{end(), false};
+    }
 
     Iterator begin(){
         return Iterator{this, tree.begin()};
@@ -45,11 +59,11 @@ public:
     }
 
     void clear() noexcept{
-        tree = Tree{};
+        tree = Tree<Element, Compare>{};
     }
 
     Iterator erase(Iterator pos){
-        if(this != pos.Map){
+        if(this != pos.map){
             throw std::invalid_argument("Iterator of wrong map");
         }
         auto it = tree.erase(pos.it);
@@ -94,13 +108,13 @@ private:
     Tree<Element, Compare> tree;
 };
 
-template<typename Key, typename T, template<typename, typename> template Tree>
+template<typename Key, typename T, template<typename, typename> typename Tree>
 class Map<Key, T, Tree>::Iterator{
 friend Map;
 public:
     Iterator() = delete;
 
-    Iterator(Map* map_, const Tree<Element, Compare>::Iterator& it_) noexcept
+    Iterator(Map* map_, const typename Tree<Element, Compare>::Iterator& it_) noexcept
     :map(map_), it(it_)
     {}
 
@@ -127,10 +141,10 @@ public:
 
 private:
     Map* map;
-    Tree<Element, Compare>::Iterator it;
+    typename Tree<Element, Compare>::Iterator it;
 };
 
-template<typename Key, typename T, template<typename, typename> template Tree>
+template<typename Key, typename T, template<typename, typename> typename Tree>
 class Map<Key, T, Tree>::Compare{
 public:
     bool operator()(const Key& a, const Key& b){
@@ -149,6 +163,5 @@ public:
         return a.first < b.first;
     }
 };
-#include "map-inl.h"
 
 #endif

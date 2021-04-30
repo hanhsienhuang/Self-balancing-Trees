@@ -326,6 +326,13 @@ public:
         }
         return *node->pElement;
     }
+
+    T* operator->(){
+        if(node == nullptr){
+            throw std::out_of_range("Out of rang in Tree");
+        }
+        return node->pElement;
+    }
 private:
     Node* node;
 };

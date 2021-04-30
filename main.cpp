@@ -1,30 +1,48 @@
-#include"vector.h"
 #include<iostream>
 #include<cstdio>
 #include<vector>
 #include<chrono>
+#include"vector.h"
+#include<map>
+#include"map.h"
 
-#define N 100000
+#define N 10000
+
+class Time{
+public:
+    Time(){
+        begin = std::chrono::steady_clock::now();
+    }
+
+    ~Time(){
+        end = std::chrono::steady_clock::now();
+        std::cout<<"Execution time: "
+            << std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count() 
+            << " ms\n" ;
+    }
+
+private:
+    std::chrono::steady_clock::time_point begin, end;
+};
 
 template<typename T>
-void test(T& vint){
+void test(T& m){
+    Time t;
+
     for(int i=0; i< N; ++i){
-        vint.push_back(3*i);
+        m.insert({i, -i});
     }
+
     for(int i=0; i< N; ++i){
-        if(vint[i] != 3*i){
-            printf("Wrong answer at index %i", i);
-        }
+        m[i] = i;
     }
+
     for(int i=0; i< N; ++i){
-        vint[i] = i*2;
-    }
-    for(int i=0; i< N; ++i){
-        if(vint[i] != 2*i){
-            printf("Wrong answer at index %i", i);
-        }
+        m.erase()
     }
 }
+
+
 
 int main(){
     std::chrono::steady_clock::time_point begin, end;
