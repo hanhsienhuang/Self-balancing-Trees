@@ -8,8 +8,8 @@
 #include "test_b_tree_32.h"
 #include "test_map.h"
 #include "test_multimap.h"
-//#include "test_set.h"
-//#include "test_multiset.h"
+#include "test_set.h"
+#include "test_multiset.h"
 
 
 int main(int argc, char **argv) {
